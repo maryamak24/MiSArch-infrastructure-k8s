@@ -190,7 +190,7 @@ def export_influxdb_to_csv(e_id: str, e_version: str, output_path: str):
 		except InfluxDBError as e:
 			raise RuntimeError(f"Influx query failed: {e}")
 	
-		csv_text = response.data.decode("utf-8").replace('\r\r\n', '\n').replace('\r\n', '\n').rstrip()
+		csv_text = response.data.decode("utf-8").rstrip()
 	
 		if not csv_text:
 			raise RuntimeError("Influx query retruned no data")
@@ -458,7 +458,7 @@ def main():
 				e_id, e_version = run_experiment(experiment)
 				end_time=datetime.datetime.now()
 
-				experiment_path = os.path.join(results_path, f"{e_id}_{e_version}")
+				experiment_path = os.path.join(results_path, f"{e_id}:{e_version}")
 				copy_experiment_files(path, experiment, experiment_path)
 				export_influxdb_to_csv(e_id, e_version, os.path.join(experiment_path, "results.csv"))
 				#post_inventory = snapshot_mongodb(inventory_db_path)
